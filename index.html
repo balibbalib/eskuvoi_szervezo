@@ -3,198 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esküvői Szálláslista Generátor - Prémium V4 (Vonalak nélkül)</title>
+    <title>Esküvői szervező központ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cormorant Garamond', serif; }
+        body { font-family: 'Cormorant Garamond', serif; background-color: #f5f5f4; }
         .wedding-title { font-family: 'Playfair Display', serif; }
-        
-        /* Fix A4-es lapméretezés a képernyőn */
-        .print-page {
-            width: 210mm;
-            height: 297mm;
-            background: white;
-            position: relative;
-            box-sizing: border-box;
-            padding: 25mm 20mm;
-            margin: 0 auto 30px auto;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Nyomtatási finomhangolás */
-        @media print {
-            .no-print { display: none !important; }
-            body { background-color: white; margin: 0; padding: 0; }
-            .print-page {
-                margin: 0 !important;
-                box-shadow: none !important;
-                page-break-after: always;
-                break-after: page;
-            }
-            /* Megakadályozza a legutolsó üres oldalt */
-            .print-page:last-child {
-                page-break-after: avoid;
-                break-after: avoid;
-            }
-            @page { 
-                size: A4; 
-                margin: 0; 
-            }
-        }
     </style>
 </head>
-<body class="bg-stone-100 p-6 min-h-screen flex flex-col md:flex-row gap-8">
+<body class="min-h-screen flex flex-col">
 
-    <div class="no-print w-full md:w-80 bg-white p-6 rounded-xl shadow-md border border-stone-200 self-start sticky top-6 z-50">
-        <h2 class="text-2xl font-bold mb-4 wedding-title text-stone-800">Lista beállítások</h2>
-
-        <div class="mb-4">
-            <label class="block text-sm font-semibold mb-2 text-stone-600">Épület neve</label>
-            <input type="text" id="buildingTitle" value="Borostyán Ház" class="w-full border border-stone-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-stone-400 font-sans">
-        </div>
-
-        <div class="mb-4 bg-stone-50 p-3 rounded-lg border border-stone-200">
-            <h3 class="text-sm font-bold text-stone-700 mb-3 font-sans uppercase tracking-wider">Betűméretek testreszabása</h3>
-            
-            <div class="mb-3">
-                <div class="flex justify-between text-xs font-semibold text-stone-600 mb-1 font-sans">
-                    <label for="titleSize">Cím mérete</label>
-                    <span id="titleSizeVal">40 px</span>
+    <nav class="bg-white border-b border-stone-200 shadow-sm w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between h-auto md:h-16 items-center py-4 md:py-0">
+                <a href="index.html" class="wedding-title text-2xl font-bold text-[#D4AF37] tracking-wider mb-4 md:mb-0">Esküvői szervező</a>
+                <div class="flex flex-wrap justify-center gap-4 md:space-x-8">
+                    <a href="szallas.html" class="text-stone-600 hover:text-[#D4AF37] text-xs md:text-sm font-semibold font-sans uppercase tracking-widest transition-colors">Szálláslista</a>
+                    <a href="templom_kartya.html" class="text-stone-600 hover:text-[#D4AF37] text-xs md:text-sm font-semibold font-sans uppercase tracking-widest transition-colors">Templomi kártyák</a>
+                    <a href="ajto_kartya.html" class="text-stone-600 hover:text-[#D4AF37] text-xs md:text-sm font-semibold font-sans uppercase tracking-widest transition-colors">Ajtótáblák</a>
                 </div>
-                <input type="range" id="titleSize" min="28" max="60" value="40" class="w-full accent-stone-700 cursor-pointer">
-            </div>
-
-            <div>
-                <div class="flex justify-between text-xs font-semibold text-stone-600 mb-1 font-sans">
-                    <label for="textSize">Vendéglista mérete</label>
-                    <span id="textSizeVal">20 px</span>
-                </div>
-                <input type="range" id="textSize" min="14" max="28" value="20" class="w-full accent-stone-700 cursor-pointer">
             </div>
         </div>
+    </nav>
 
-        <div class="mb-6">
-            <label class="block text-sm font-semibold mb-2 text-stone-600">Vendégek (Név; Szoba)</label>
-            <textarea id="guestList" rows="12" class="w-full border border-stone-300 p-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-stone-400 font-sans" placeholder="Kovács János; 1. szoba"></textarea>
-            <p class="text-xs text-stone-500 mt-2 font-sans">Válaszd el őket <strong>pontosvesszővel (;)</strong>.</p>
+    <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-12 flex flex-col items-center justify-center">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-4 wedding-title text-stone-800 tracking-wide">Esküvői nyomtatvány generátor</h1>
+            <div class="h-px bg-[#D4AF37] w-32 mx-auto mb-6 opacity-60"></div>
+            <p class="text-2xl italic text-stone-600">Válaszd ki, mit szeretnél készíteni!</p>
         </div>
 
-        <button onclick="window.print()" class="w-full bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 px-4 rounded-lg transition duration-200 font-sans tracking-wide shadow-sm flex items-center justify-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-            Nyomtatás / PDF
-        </button>
-    </div>
-
-    <div id="pagesContainer" class="flex-1">
-        </div>
-
-    <script>
-        const inputTitle = document.getElementById('buildingTitle');
-        const guestList = document.getElementById('guestList');
-        const titleSizeSlider = document.getElementById('titleSize');
-        const textSizeSlider = document.getElementById('textSize');
-        const titleSizeVal = document.getElementById('titleSizeVal');
-        const textSizeVal = document.getElementById('textSizeVal');
-        const pagesContainer = document.getElementById('pagesContainer');
-
-        const ROWS_PER_PAGE = 15;
-
-        function updateView() {
-            const title = inputTitle.value;
-            const tSize = titleSizeSlider.value;
-            const nSize = textSizeSlider.value;
-
-            // Csúszka értékek kiírása a vezérlőpultra
-            titleSizeVal.textContent = tSize + ' px';
-            textSizeVal.textContent = nSize + ' px';
-
-            // Üres sorok kiszűrése
-            const lines = guestList.value.split('\n').filter(line => line.trim() !== '');
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             
-            // Adatok objektummá alakítása
-            const guests = lines.map(line => {
-                const [name, room] = line.split(';');
-                return { name: name?.trim() || '', room: room?.trim() || '' };
-            });
+            <a href="szallas.html" class="group bg-white rounded-xl shadow-md border border-stone-200 p-8 text-center hover:border-[#D4AF37] hover:shadow-lg transition duration-300 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-[#D4AF37] transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left"></div>
+                <div class="w-16 h-16 mx-auto bg-stone-50 rounded-full flex items-center justify-center mb-6 border border-stone-100 group-hover:border-[#D4AF37] transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 wedding-title text-stone-800">Szálláslista</h3>
+                <p class="text-stone-500 font-sans text-sm leading-relaxed">Elegáns, A4-es méretű lista az épületek ajtajára. Automatikusan összevonja az azonos szobában lakókat.</p>
+            </a>
 
-            pagesContainer.innerHTML = '';
+            <a href="templom_kartya.html" class="group bg-white rounded-xl shadow-md border border-stone-200 p-8 text-center hover:border-[#D4AF37] hover:shadow-lg transition duration-300 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-[#D4AF37] transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left"></div>
+                <div class="w-16 h-16 mx-auto bg-stone-50 rounded-full flex items-center justify-center mb-6 border border-stone-100 group-hover:border-[#D4AF37] transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 wedding-title text-stone-800">Templomi kártyák</h3>
+                <p class="text-stone-500 font-sans text-sm leading-relaxed">Fekvő formátumú, hatalmas betűkkel írt foglaló kártyák a templomi padsorok lefoglalásához (pl. Örömszülők).</p>
+            </a>
 
-            const totalPages = Math.max(1, Math.ceil(guests.length / ROWS_PER_PAGE));
+            <a href="ajto_kartya.html" class="group bg-white rounded-xl shadow-md border border-stone-200 p-8 text-center hover:border-[#D4AF37] hover:shadow-lg transition duration-300 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-[#D4AF37] transform scale-x-0 group-hover:scale-x-100 transition duration-500 origin-left"></div>
+                <div class="w-16 h-16 mx-auto bg-stone-50 rounded-full flex items-center justify-center mb-6 border border-stone-100 group-hover:border-[#D4AF37] transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#D4AF37]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m8 0h1M7 19h10n" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 10V5a2 2 0 012-2h10a2 2 0 012 2v5" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 wedding-title text-stone-800">Ajtótáblák</h3>
+                <p class="text-stone-500 font-sans text-sm leading-relaxed">Takarékos, 6 db/lap elrendezésű, vágóasztalra optimalizált kártyák egyenesen a szobák ajtajára.</p>
+            </a>
 
-            for (let p = 0; p < totalPages; p++) {
-                const pageDiv = document.createElement('div');
-                pageDiv.className = 'print-page';
-
-                pageDiv.innerHTML = `
-                    <div class="absolute top-[12mm] left-[12mm] right-[12mm] bottom-[12mm] border border-stone-200 pointer-events-none rounded-sm"></div>
-                    <div class="absolute top-[14mm] left-[14mm] right-[14mm] bottom-[14mm] border-2 border-stone-300 pointer-events-none rounded-sm"></div>
-                    
-                    <div class="text-center mb-8 relative z-10">
-                        <h1 class="font-bold mb-2 wedding-title text-stone-800 tracking-wide" style="font-size: ${tSize}px; line-height: 1.2;">${title}</h1>
-                        <p class="italic text-stone-500 font-serif tracking-wide" style="font-size: ${Math.max(16, tSize * 0.45)}px;">Szállásbeosztás</p>
-                        <div class="h-px bg-stone-300 w-24 mx-auto mt-4"></div>
-                    </div>
-
-                    <div class="relative z-10 px-4">
-                        <table class="w-full table-fixed text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-stone-300 text-stone-400 uppercase tracking-widest text-xs font-sans h-[10mm]">
-                                    <th class="w-[10%] font-semibold pl-4">#</th>
-                                    <th class="w-[55%] font-semibold">Vendég neve</th>
-                                    <th class="w-[35%] font-semibold text-right pr-6">Szoba / Helyszín</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="absolute bottom-[18mm] left-0 right-0 text-center text-xs text-stone-400 font-sans tracking-widest uppercase">
-                        ${p + 1} / ${totalPages} oldal
-                    </div>
-                `;
-
-                const tbody = pageDiv.querySelector('tbody');
-
-                for (let r = 0; r < ROWS_PER_PAGE; r++) {
-                    const guestIndex = (p * ROWS_PER_PAGE) + r;
-                    const guest = guests[guestIndex];
-                    const tr = document.createElement('tr');
-                    
-                    // JAVÍTÁS: Eltávolítottuk a 'border-b border-stone-100' osztályokat
-                    tr.className = "h-[13mm]";
-
-                    if (guest) {
-                        tr.innerHTML = `
-                            <td class="text-stone-400 font-medium font-sans pl-4" style="font-size: ${Math.max(13, nSize * 0.75)}px;">${guestIndex + 1}.</td>
-                            <td class="font-semibold text-stone-800 truncate pr-4" style="font-size: ${nSize}px;">${guest.name}</td>
-                            <td class="text-right italic text-stone-600 truncate pr-6" style="font-size: ${nSize}px;">${guest.room}</td>
-                        `;
-                    } else {
-                        tr.innerHTML = `
-                            <td class="text-transparent font-sans pl-4" style="font-size: ${nSize}px;">${guestIndex + 1}.</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        `;
-                    }
-                    tbody.appendChild(tr);
-                }
-
-                pagesContainer.appendChild(pageDiv);
-            }
-        }
-
-        inputTitle.addEventListener('input', updateView);
-        guestList.addEventListener('input', updateView);
-        titleSizeSlider.addEventListener('input', updateView);
-        textSizeSlider.addEventListener('input', updateView);
-
-        const sampleGuests = [];
-        for(let i = 1; i <= 20; i++) {
-            sampleGuests.push(`Minta Vendégcsalád ${i}; ${i + 10}. apartman`);
-        }
-        guestList.value = sampleGuests.join('\n');
-        updateView();
-    </script>
+        </div>
+    </main>
 </body>
 </html>

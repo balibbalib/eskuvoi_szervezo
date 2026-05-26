@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szoba Ajtótábla Generátor (Vágóasztalhoz)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        html, body { margin: 0; padding: 0; background-color: #f5f5f4; }
+        body { 
+            font-family: 'Cormorant Garamond', serif; 
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important; 
+        }
+        .wedding-title { font-family: 'Playfair Display', serif; }
+        
+        /* A4-es lap, tökéletes rácsos elrendezéssel */
+        .print-page {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            position: relative;
+            box-sizing: border-box;
+            margin: 0 auto 30px auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            display: grid;
+            grid-template-columns: 105mm 105mm; /* Pontosan 2 oszlop */
+            grid-template-rows: 99mm 99mm 99mm; /* Pontosan 3 sor */
+        }
+
+        /* Egy darab ajtótábla kártya */
+        .door-card {
+            width: 105mm;
+            height: 99mm;
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 12mm 8mm; 
+            overflow: hidden;
+        }
+
+        /* Csak a belső éleken legyen vágóvonal a lapvágóhoz */
+        .door-card:nth-child(odd) {
+            border-right: 1px dashed #a8a29e;
+        }
+        .door-card:not(:nth-child(n+5)) {
+            border-bottom: 1px dashed #a8a29e;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            html, body { 
+                background-color: white !important; 
+                margin: 0 !important; 
+                padding: 0 !important; 
+            }
+            .print-page {
+                margin: 0 !important;
+                box-shadow: none !important;
+                page-break-after: always;
+                break-after: page;
+            }
+            @page { 
+                size: A4 portrait; 
+                margin: 0mm; 
+            }
+        }
+    </style>
+</head>
+<body class="p-6 min-h-screen flex flex-col xl:flex-row gap-8 items-start justify-center">
+    <style>
+        body { padding-top: 100px !important; }
+        @media print { body { padding-top: 0 !important; } }
+    </style>
+
+    <header class="no-print fixed top-0 left-0 w-full bg-white border-b border-stone-200 shadow-md z-[100]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center h-auto md:h-[72px] py-3 md:py-0">
+                <!-- Logó / Vissza a főoldalra -->
+                <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wider mb-2 md:mb-0 hover:text-[#C5A028] transition-colors" style="font-family: 'Playfair Display', serif;">
+                    Esküvői szervező
+                </a>
+                
+                <!-- Menüpontok -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-4 md:space-x-8" id="main-nav-links">
+                    <a href="szallas.html" class="nav-link text-stone-600 hover:text-[#D4AF37] text-xs sm:text-sm font-semibold font-sans uppercase tracking-widest transition-colors px-2 py-1">Szálláslista</a>
+                    <a href="templom_kartya.html" class="nav-link text-stone-600 hover:text-[#D4AF37] text-xs sm:text-sm font-semibold font-sans uppercase tracking-widest transition-colors px-2 py-1">Templomi kártyák</a>
+                    <a href="ajto_kartya.html" class="nav-link text-stone-600 hover:text-[#D4AF37] text-xs sm:text-sm font-semibold font-sans uppercase tracking-widest transition-colors px-2 py-1">Ajtótáblák</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('.nav-link');
+            const currentUrl = window.location.pathname.split('/').pop() || 'index.html';
+            
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.remove('text-stone-600');
+                    link.classList.add('text-[#D4AF37]', 'border-b-2', 'border-[#D4AF37]');
+                }
+            });
+        });
+    </script>
+
+    <div class="no-print w-full xl:w-96 bg-white p-6 rounded-xl shadow-md border border-stone-200 sticky top-6 z-50 shrink-0">
+        <h2 class="text-2xl font-bold mb-4 wedding-title text-stone-800">Ajtótábla beállítások</h2>
+
+        <div class="mb-4">
+            <label class="block text-sm font-semibold mb-2 text-stone-600">Épület neve (Minden kártyán)</label>
+            <input type="text" id="mainTitle" value="Dorottya & Péter" class="w-full border border-stone-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-sans">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-semibold mb-2 text-stone-600">Alcím</label>
+            <input type="text" id="subTitle" value="[szállás neve]" class="w-full border border-stone-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-sans">
+        </div>
+
+        <div class="mb-4 bg-stone-50 p-4 rounded-lg border border-stone-200">
+            <h3 class="text-sm font-bold text-stone-700 mb-4 font-sans uppercase tracking-wider">Betűméretek</h3>
+            
+            <div class="mb-4">
+                <div class="flex justify-between text-xs font-semibold text-stone-600 mb-1 font-sans">
+                    <label for="globalTitleSize">Főcím mérete</label>
+                    <span id="globalTitleSizeVal">22 px</span>
+                </div>
+                <input type="range" id="globalTitleSize" min="14" max="36" value="22" class="w-full accent-[#D4AF37] cursor-pointer">
+            </div>
+
+            <div class="mb-4">
+                <div class="flex justify-between text-xs font-semibold text-stone-600 mb-1 font-sans">
+                    <label for="roomSize">Szoba nevének mérete</label>
+                    <span id="roomSizeVal">28 px</span>
+                </div>
+                <input type="range" id="roomSize" min="18" max="45" value="28" class="w-full accent-[#D4AF37] cursor-pointer">
+            </div>
+
+            <div>
+                <div class="flex justify-between text-xs font-semibold text-stone-600 mb-1 font-sans">
+                    <label for="nameSize">Vendégek nevének mérete</label>
+                    <span id="nameSizeVal">20 px</span>
+                </div>
+                <input type="range" id="nameSize" min="14" max="35" value="20" class="w-full accent-[#D4AF37] cursor-pointer">
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-sm font-semibold mb-2 text-stone-600">Vendégek (Név; Szoba; <span class="text-[#D4AF37]">ID</span>)</label>
+            <textarea id="guestList" rows="12" class="w-full border border-stone-300 p-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AF37] font-sans" placeholder="Kovács János; 101. szoba; 1"></textarea>
+            <p class="text-[10px] text-stone-500 mt-2 font-sans italic">Egy azonosítóhoz (ID) egy közös kártya készül! Nyomtatásnál ne feledd: margó "Nincs".</p>
+        </div>
+
+        <button onclick="window.print()" class="w-full bg-[#D4AF37] hover:bg-[#C5A028] text-white font-bold py-4 px-4 rounded-lg transition duration-200 font-sans tracking-wide shadow-sm flex items-center justify-center gap-2 text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+            Nyomtatás / PDF mentés
+        </button>
+    </div>
+
+    <div id="pagesContainer" class="flex-col gap-6 flex"></div>
+
+    <script>
+        const mainTitleInput = document.getElementById('mainTitle');
+        const subTitleInput = document.getElementById('subTitle');
+        const guestList = document.getElementById('guestList');
+        
+        const globalTitleSizeSlider = document.getElementById('globalTitleSize');
+        const roomSizeSlider = document.getElementById('roomSize');
+        const nameSizeSlider = document.getElementById('nameSize');
+        
+        const globalTitleSizeVal = document.getElementById('globalTitleSizeVal');
+        const roomSizeVal = document.getElementById('roomSizeVal');
+        const nameSizeVal = document.getElementById('nameSizeVal');
+        
+        const pagesContainer = document.getElementById('pagesContainer');
+
+        const CARDS_PER_PAGE = 6;
+
+        function updateView() {
+            const mTitle = mainTitleInput.value;
+            const sTitle = subTitleInput.value;
+
+            const gtSize = globalTitleSizeSlider.value;
+            const rSize = roomSizeSlider.value;
+            const nSize = nameSizeSlider.value;
+
+            globalTitleSizeVal.textContent = gtSize + ' px';
+            roomSizeVal.textContent = rSize + ' px';
+            nameSizeVal.textContent = nSize + ' px';
+
+            const lines = guestList.value.split('\n').filter(line => line.trim() !== '');
+            
+            // Csoportosítás
+            const groups = {};
+            
+            lines.forEach((line, index) => {
+                const parts = line.split(';');
+                const name = parts[0]?.trim() || '';
+                const room = parts[1]?.trim() || '';
+                const groupId = parts[2]?.trim() || (room !== '' ? room : `unique-${index}`);
+                
+                if (!groups[groupId]) {
+                    groups[groupId] = {
+                        roomName: room,
+                        guests: []
+                    };
+                }
+                if (name !== '') {
+                    groups[groupId].guests.push(name);
+                }
+            });
+
+            const cards = Object.values(groups);
+
+            pagesContainer.innerHTML = '';
+            
+            const totalPages = Math.max(1, Math.ceil(cards.length / CARDS_PER_PAGE));
+
+            for (let p = 0; p < totalPages; p++) {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = 'print-page';
+
+                for (let c = 0; c < CARDS_PER_PAGE; c++) {
+                    const cardIndex = (p * CARDS_PER_PAGE) + c;
+                    const cardData = cards[cardIndex];
+
+                    if (cardData) {
+                        const guestsHtml = cardData.guests.map(guest => 
+                            `<div class="font-semibold text-stone-800 leading-tight mb-1" style="font-size: ${nSize}px;">${guest}</div>`
+                        ).join('');
+
+                        const cardHtml = `
+                            <div class="door-card">
+                                <div class="absolute top-[6mm] left-[6mm] right-[6mm] bottom-[6mm] border border-[#D4AF37] opacity-40 pointer-events-none rounded-sm"></div>
+                                <div class="absolute top-[8mm] left-[8mm] right-[8mm] bottom-[8mm] border-2 border-[#D4AF37] pointer-events-none rounded-sm"></div>
+                                
+                                <div class="z-10 w-full px-2">
+                                    ${mTitle ? `<h3 class="font-bold wedding-title text-[#D4AF37] tracking-wide mb-1" style="font-size: ${gtSize}px;">${mTitle}</h3>` : ''}
+                                    ${sTitle ? `<p class="italic text-stone-500 font-serif tracking-wide mb-4" style="font-size: ${Math.max(12, gtSize * 0.65)}px;">${sTitle}</p>` : ''}
+                                    
+                                    <h2 class="font-bold wedding-title text-stone-800 tracking-wide" style="font-size: ${rSize}px; line-height: 1.1;">
+                                        ${cardData.roomName}
+                                    </h2>
+                                    
+                                    <div class="h-px bg-[#D4AF37] w-12 mx-auto my-3 opacity-60"></div>
+                                    
+                                    <div class="flex flex-col items-center justify-center">
+                                        ${guestsHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        pageDiv.innerHTML += cardHtml;
+                    } else {
+                        // Üres kártya helykitöltő a rács miatt
+                        pageDiv.innerHTML += `<div class="door-card"></div>`;
+                    }
+                }
+                pagesContainer.appendChild(pageDiv);
+            }
+        }
+
+        mainTitleInput.addEventListener('input', updateView);
+        subTitleInput.addEventListener('input', updateView);
+        guestList.addEventListener('input', updateView);
+        globalTitleSizeSlider.addEventListener('input', updateView);
+        roomSizeSlider.addEventListener('input', updateView);
+        nameSizeSlider.addEventListener('input', updateView);
+
+        // Mintaadatok
+        guestList.value = "Kovács János; 1. apartman; B1\nKovácsné Erzsébet; 1. apartman; B1\nKovács Petike; 1. apartman; B1\nSzabó Anna; 2. apartman; B2\nSzabó Gábor; 2. apartman; B2\nKiss Boldizsár; 3. szoba; B3\nNagy Alíz; 4. szoba; B4\nNagy Tamás; 4. szoba; B4\nTóth Lili; 5. szoba; B5\nHorváth Gergő; Főépület Nászutas; B6\nTeszt Elek; Kis Faház; B7";
+        updateView();
+    </script>
+</body>
+</html>
